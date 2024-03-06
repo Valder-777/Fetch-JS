@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача Никиты (ajax)</title>
+</head>
+<body>
+    <input type="text" id="input-id" placeholder="текст"></input>
+    <br><br>
+    <button id="button-sendPost" onclick='sendPost()'>Отправить POST запрос</button>
+    <button id="button-sendGet" onclick='sendGet()'>Отправить GET запрос</button>
+    <button onclick='sendAsyncPost()'>Отправить асинхронный POST запрос</button>
+    <button onclick='sendAsyncGET()'>Отправить асинхронный GET запрос</button>
+    <div id="server-info"></div>
+    <br><br>
+    <strong>Обработка ответа из сервера - в консоли</strong>
+
+    
+<script>
+    const urlPost = "https://httpbin.org/post";
+    const urlGet = "https://httpbin.org/get";
+    let serverInfo;
+
+    //Post запрос на сервер (без await c использованием промисов)        
+    const sendPost = function () {
+        let message = JSON.stringify(document.getElementById("input-id").value);
+        fetch(urlPost, {
+            method: 'POST',
+            body: message})
+            .then(response => response.json())
+            .then(result => console.log(result))                
+    };
+
+    //Get запрос на сервер (без await c использованием промисов)
+    const sendGet = function() {
+        let message = document.getElementById("input-id").value;
+        const data = {
+            key: message
+        };
+        const searchParams = (new URLSearchParams(data)).toString();
+        let url = `${urlGet}?${searchParams}`; //Добавляем message в URL после '?'
+        fetch(url, {method: 'GET'})
+            .then(response => response.json())
+            .then(result => console.log(result))
+        }
+            
+        
+    //Асинхронный запрос на сервер метод Fetch(Post)
+    const sendAsyncPost = async function () {
+        let message = JSON.stringify(document.getElementById("input-id").value);
+        let response = await fetch('https://httpbin.org/post', {
+                    method: 'POST',
+                    body: message
+                    });
+        let result = await response.json();
+        console.log(result);
+    }
+
+    //Асинхронный запрос на сервер метод Fetch(GET)
+    const sendAsyncGET = async function () {
+        let message = document.getElementById("input-id").value;
+        const data = {
+            key: message
+        };
+        const searchParams = (new URLSearchParams(data)).toString();
+        let url = `${urlGet}?${searchParams}`;
+        fetch(url, {method: 'GET'})
+        let response = await fetch(url, {
+                    method: 'GET',
+                    });
+        let result = await response.json();
+        console.log(result);
+    }
+    </script>
+</body>
+</html> 
